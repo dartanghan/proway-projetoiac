@@ -49,9 +49,27 @@ resource "aws_instance" "dart_nginx_ec2" {
   ami = data.aws_ami.imagem_ec2.id
   subnet_id = var.sn_pub01
   vpc_security_group_ids = [ aws_security_group.dart_nginx_sg.id ]
-  
+  key_name = aws_key_pair.lb_ssh_key_pair.key_name
   associate_public_ip_address = true
   tags = {
     Name = "dart-nginx_ec2"
   }
+  user_data = <<-EOF
+    #!/bin/bash
+    yum update -y
+    amazon-linux-extras install nginx1 -y
+    systemctl start nginx
+    systemctl enable nginx
+    echo "<h1>Olá, Mundo!</h1>" > /usr/share/nginx/html/index.html
+  EOF
+}
+
+# Criacao da chave SSH que sera usada para conexao na instancia
+resource "tls_private_key" "lb_ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+resource "aws_key_pair" "lb_ssh_key_pair" {
+  key_name   = "dart_key_pair"
+  public_key = tls_private_key.lb_ssh_key.public_key_openssh
 }

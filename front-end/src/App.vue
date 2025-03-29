@@ -2,8 +2,27 @@
 <template>
   <main>
     Bem vindo ao projeto Proway!
+    <p>Backend disse: {{ serverResponse }}</p>
   </main>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      serverResponse: null,
+    };
+  },
+  async mounted() {
+    try {
+      const response = await fetch('http://localhost:8000');
+      this.serverResponse = await response.text();
+    } catch (error) {
+      console.error('Error fetching data from server:', error);
+      this.serverResponse = 'Failed to fetch data from server.';
+    }
+  },
+};
+</script>
 
 <style scoped>
 header {
