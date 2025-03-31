@@ -1,0 +1,11 @@
+[Unit]
+Description=backendservice
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ec2-user
+ExecStart=/opt/rc.proway
