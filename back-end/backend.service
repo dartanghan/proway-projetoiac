@@ -1,3 +1,6 @@
+# Servico usado pelo linux
+# systemctl status|start|stop backend
+
 [Unit]
 Description=backendservice
 After=network.target
@@ -9,3 +12,6 @@ Restart=always
 RestartSec=1
 User=ec2-user
 ExecStart=/opt/rc.proway
+
+[Install]
+WantedBy=multi-user.target
