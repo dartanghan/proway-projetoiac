@@ -1,4 +1,4 @@
-PROJETO = dart-prowayteste
+PROJETO = dart-prowaytst
 REGION = us-west-1
 
 default: deploy

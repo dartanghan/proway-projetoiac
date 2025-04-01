@@ -4,6 +4,7 @@ output "backend_ip" {
 
 output "backend_privkey" {
   value     = module.backend.private_key_pem
+  sensitive = true
 }
 
 output "loadbalancer_ip" {
@@ -12,4 +13,5 @@ output "loadbalancer_ip" {
 
 output "loadbalancer_privkey" {
   value     = module.loadbalancer.private_key_pem
+  sensitive = true
 }

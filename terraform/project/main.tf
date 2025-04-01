@@ -12,6 +12,6 @@ module "loadbalancer" {
 module "backend" {
     source = "./modules/backend"
     vpc_id = module.vpc.vpc_id
-    sn_priv01 = module.vpc.sn_pub01
-    sn_priv02 = module.vpc.sn_pub02
+    sn_priv01 = module.vpc.sn_priv01
+    sn_priv02 = module.vpc.sn_priv02
 }
