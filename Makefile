@@ -1,28 +1,37 @@
-PROJETO = dart-prowaytst
-REGION = us-west-1
+.PHONY: init plan apply destroy build deploy clean docker-build docker-run azure-deploy azure-destroy
 
-default: deploy
+init:
+	terraform init
 
-%.build_iac:
-	cd terraform/$* && \
-		rm -rf .terraform && \
-		terraform init -backend-config="bucket=${PROJETO}-terraform-state" -backend-config="region=${REGION}" && \
-		terraform apply -var "project_name=${PROJETO}" -var project_region="${REGION}" --auto-approve 
+plan:
+	terraform plan
 
-%.destroy_iac:
-	cd terraform/$* && \
-		terraform destroy --auto-approve -var "project_name=${PROJETO}" -var project_region="${REGION}"
+apply:
+	terraform apply -auto-approve
 
-deploy:
-	$(MAKE) build_iac
+destroy:
+	terraform destroy -auto-approve
 
-undeploy:
-	$(MAKE) destroy_iac
+build:
+	npm install
+	npm run build
 
-build_iac:
-	$(MAKE) structure.build_iac
-	$(MAKE) project.build_iac
+deploy: build apply
+	./deploy.sh
 
-destroy_iac:
-	$(MAKE) project.destroy_iac
-	$(MAKE) structure.destroy_iac
+clean:
+	rm -rf node_modules dist .terraform terraform.tfstate*
+
+docker-build:
+	docker build -t jewelry-app .
+
+docker-run: docker-build
+	docker run -p 8080:80 jewelry-app
+
+azure-deploy: init
+	terraform apply -auto-approve
+	@echo "Aguarde alguns minutos para a aplicação inicializar..."
+	@echo "URL: http://$$(terraform output -raw vm_public_ip):8080"
+
+azure-destroy:
+	terraform destroy -auto-approve
